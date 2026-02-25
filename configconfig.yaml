@@ -1,0 +1,62 @@
+# NSATS Configuration
+system:
+  name: "NSATS"
+  version: "1.0.0"
+  environment: "development"
+  log_level: "INFO"
+
+firebase:
+  project_id: "nsats-trading"
+  credentials_path: "./config/firebase_credentials.json"
+  collections:
+    trades: "trades"
+    strategies: "strategies"
+    performance: "performance_metrics"
+    market_data: "market_data_stream"
+
+trading:
+  exchanges:
+    binance:
+      enabled: true
+      api_key: "${BINANCE_API_KEY}"
+      api_secret: "${BINANCE_API_SECRET}"
+      testnet: true
+    coinbase:
+      enabled: false
+  default_pair: "BTC/USDT"
+  min_balance_threshold: 100.0
+  max_position_size: 0.1  # 10% of portfolio
+
+neural:
+  model_path: "./models/neuro_symbolic_model.pth"
+  training_batch_size: 64
+  sequence_length: 100
+  validation_split: 0.2
+  learning_rate: 0.001
+
+symbolic:
+  rule_engine_path: "./config/trading_rules.json"
+  confidence_threshold: 0.85
+  max_rules_per_strategy: 50
+
+synthetic_data:
+  gan_model_path: "./models/gan_generator.pth"
+  generate_per_epoch: 10000
+  noise_dimension: 100
+  validation_ratio: 0.15
+
+self_optimization:
+  tuning_interval_hours: 24
+  performance_window_days: 7
+  hyperparameter_search_space:
+    learning_rate: [0.0001, 0.001, 0.01]
+    hidden_layers: [[64, 32], [128, 64, 32], [256, 128, 64]]
+    dropout_rate: [0.1, 0.2, 0.3]
+
+telegram:
+  bot_token: "${TELEGRAM_BOT_TOKEN}"
+  chat_id: "${TELEGRAM_CHAT_ID}"
+  alert_thresholds:
+    large_trade: 10000.0
+    drawdown: 0.05
+    system_error: true
